@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ijw.Next.IO.CsvReader</name>
+    </assembly>
+    <members>
+        <member name="T:ijw.Next.IO.CsvFileReader">
+            <summary>
+            CSV文件读取
+            </summary>
+        </member>
+        <member name="P:ijw.Next.IO.CsvFileReader.CsvFilePath">
+            <summary>
+            CSV文件路径
+            </summary>
+        </member>
+        <member name="P:ijw.Next.IO.CsvFileReader.Encoding">
+            <summary>
+            文件的编码
+            </summary>
+        </member>
+        <member name="P:ijw.Next.IO.CsvFileReader.IsFirstLineHeader">
+            <summary>
+            首行是否是表头
+            </summary>
+        </member>
+        <member name="P:ijw.Next.IO.CsvFileReader.Separators">
+            <summary>
+            分隔符
+            </summary>
+        </member>
+        <member name="M:ijw.Next.IO.CsvFileReader.ReadStringsWithLineNumber">
+            <summary>
+            将每行分隔后，返回字符串数组和行号
+            </summary>
+        </member>
+        <member name="T:ijw.Next.IO.CSVReader">
+            <summary>
+            CSV文本读取
+            </summary>
+        </member>
+        <member name="M:ijw.Next.IO.CSVReader.ReadSeparatedStringsWithLineNumber(System.String,System.Boolean)">
+            <summary>
+            将每行以逗号分隔后，返回字符串数组和行号. 使用utf-8读取文件.
+            </summary>
+            <param name="csvFilepath">csv文件的路径</param>
+            <param name="isFirstLineHeader">第一行是否是header</param>
+            <returns></returns>
+        </member>
+        <member name="M:ijw.Next.IO.CSVReader.ReadSeparatedStringsWithLineNumber(System.String,System.Char[],System.Boolean)">
+            <summary>
+            将每行用指定字符分隔后，返回字符串数组和行号.使用utf-8读取文件.
+            </summary>
+            <param name="csvFilepath">csv文件的路径</param>
+            <param name="separators">使用的分隔符</param>
+            <param name="isFirstLineHeader">第一行是否是header</param>
+            <returns></returns>
+        </member>
+        <member name="M:ijw.Next.IO.CSVReader.ReadObjects``1(System.String)">
+            <summary>
+            从csv文件里面读取对象
+            </summary>
+            <typeparam name="T">读取对象的类型</typeparam>
+            <param name="csvFilepath">csv文件的编码</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

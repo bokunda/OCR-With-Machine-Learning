@@ -1,0 +1,289 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ijw.Next.IO</name>
+    </assembly>
+    <members>
+        <member name="T:ijw.Next.IO.BinaryReaderExt">
+            <summary>
+            BinaryReader的扩展方法
+            </summary>
+        </member>
+        <member name="M:ijw.Next.IO.BinaryReaderExt.ReadBytes(System.IO.BinaryReader,System.Int64)">
+            <summary>
+            读取指定长度的二进制数据
+            </summary>
+            <param name="reader"></param>
+            <param name="length">字节数</param>
+            <returns>读取到的二进制数据数组</returns>
+        </member>
+        <member name="M:ijw.Next.IO.BinaryReaderExt.ReadBytes(System.IO.BinaryReader)">
+            <summary>
+            读取全部的二进制数据
+            </summary>
+            <param name="reader"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ijw.Next.IO.BytesExt">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ijw.Next.IO.BytesExt.WriteToFile(System.Byte[],System.String,System.Boolean)">
+            <summary>
+            以默认的Unicode编码写入文件
+            </summary>
+            <param name="content"></param>
+            <param name="filename">文件名</param>
+            <param name="append">是否是追加模式</param>
+        </member>
+        <member name="M:ijw.Next.IO.BytesExt.WriteToFile(System.Byte[],System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            写入文件
+            </summary>
+            <param name="content"></param>
+            <param name="filename">文件名</param>
+            <param name="encoding">写入的编码</param>
+            <param name="append">是否追加模式</param>
+        </member>
+        <member name="T:ijw.Next.IO.FileHelper">
+            <summary>
+            文件相关的帮助方法
+            </summary>
+        </member>
+        <member name="M:ijw.Next.IO.FileHelper.WriteStringToFile(System.String,System.String,System.Boolean)">
+            <summary>
+            使用Unicode编码向指定的文件写入字符串，可选追加或者创建/覆盖.
+            </summary>
+            <param name="filepath">写入文件</param>
+            <param name="content">写入的内容</param>
+            <param name="append">是否追加. true为追加, false为创建或覆盖</param>
+        </member>
+        <member name="M:ijw.Next.IO.FileHelper.WriteStringToFile(System.String,System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            使用指定的编码向指定的文件写入字符串,可选追加或者创建/覆盖.
+            </summary>
+            <param name="filepath">写入文件</param>
+            <param name="content">写入的内容</param>
+            <param name="encoding">指定的编码方法</param>
+            <param name="append">是否追加. true为追加, false为创建或覆盖</param>
+        </member>
+        <member name="M:ijw.Next.IO.FileHelper.CopyFiles(System.String,System.String,System.String,System.IO.SearchOption,System.Boolean)">
+            <summary>
+            按通配符拷贝多个文件.
+            </summary>
+            <param name="sourceDir">源文件夹</param>
+            <param name="destDir">目标文件夹</param>
+            <param name="pattern">通配符</param>
+            <param name="copyOption">是否复制所有子目录中的文件</param>
+            <param name="overwrite">是否覆盖, 设为false后遇到同名文件会抛出异常</param>
+            <returns>字符串数组, 包含拷贝文件的源路径全名称</returns>
+        </member>
+        <member name="M:ijw.Next.IO.FileHelper.DeleteFiles(System.String,System.String)">
+            <summary>
+            删除指定目录的所有符合通配符的文件。
+            </summary>
+            <param name="dir">目录名</param>
+            <param name="pattern">通配符</param>
+            <returns>删除的文件数量</returns>
+        </member>
+        <member name="T:ijw.Next.IO.StreamExt">
+            <summary>
+            扩展Stream类, 以支持一些简便的读写功能.
+            </summary>
+        </member>
+        <member name="M:ijw.Next.IO.StreamExt.ReadStringAndDispose(System.IO.Stream)">
+            <summary>
+            使用Unicode编码方式使用StreamReader从流中读取全部的字符串
+            </summary>
+            <param name="stream"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ijw.Next.IO.StreamExt.ReadStringAndDispose(System.IO.Stream,System.Text.Encoding)">
+            <summary>
+            使用指定的编码方式,调用StreamReader从流中读取全部的字符串
+            </summary>
+            <param name="stream"></param>
+            <param name="encoding">编码方式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ijw.Next.IO.StreamExt.WriteStringAndDispose(System.IO.Stream,System.String,System.Text.Encoding)">
+            <summary>
+            用指定编码把字符串写入流，并Dispose流。
+            </summary>
+            <param name="stream"></param>
+            <param name="aString">欲写入的字符串</param>
+            <param name="encoding">所用的编码</param>
+        </member>
+        <member name="M:ijw.Next.IO.StreamExt.WriteStringAndDispose(System.IO.Stream,System.String)">
+            <summary>
+            用默认的Unicode编码把字符串写入流，并Dispose流。
+            </summary>
+            <param name="stream"></param>
+            <param name="aString">欲写入的字符串</param>
+        </member>
+        <member name="M:ijw.Next.IO.StreamExt.ReadBytesAndDispose(System.IO.Stream,System.Int32)">
+            <summary>
+            使用Unicode编码方式, 调用BinaryReader从流中读取指定长度的二进制数据
+            </summary>
+            <param name="stream"></param>
+            <param name="length">读取长度</param>
+            <returns>读取的二进制数组</returns>
+        </member>
+        <member name="M:ijw.Next.IO.StreamExt.ReadBytesAndDispose(System.IO.Stream,System.Int32,System.Text.Encoding)">
+            <summary>
+            使用指定的编码方式, 调用BinaryReader从流中读取指定长度的二进制数据
+            </summary>
+            <param name="stream"></param>
+            <param name="length">读取长度</param>
+            <param name="encoding">编码方式</param>
+            <returns>读取的二进制数组</returns>
+        </member>
+        <member name="M:ijw.Next.IO.StreamExt.ReadBytesAndDispose(System.IO.Stream)">
+            <summary>
+            使用Unicode编码方式, 调用BinaryReader从流中读取全部二进制数据
+            </summary>
+            <param name="stream"></param>
+            <returns>读取的字节数</returns>
+        </member>
+        <member name="M:ijw.Next.IO.StreamExt.ReadBytesAndDispose(System.IO.Stream,System.Text.Encoding)">
+            <summary>
+            使用BinaryReader用指定的编码方式从流中读取全部的二进制数据.
+            </summary>
+            <param name="stream"></param>
+            <param name="encoding">使用的编码方式</param>
+            <returns>读取的字节数</returns>
+        </member>
+        <member name="M:ijw.Next.IO.StreamExt.WriteToTextFileAndDispose(System.IO.Stream,System.String,System.Boolean)">
+            <summary>
+            使用UTF8编码调用ReadStringByStreamReader方法读取流中的全部字符串, 使用UTF8编码覆盖或者追加到指定文件.
+            </summary>
+            <param name="stream"></param>
+            <param name="filename">文件名</param>
+            <param name="append">是否追加. 默认是false</param>
+        </member>
+        <member name="M:ijw.Next.IO.StreamExt.WriteToTextFileAndDispose(System.IO.Stream,System.String,System.Text.Encoding,System.Text.Encoding,System.Boolean)">
+            <summary>
+            使用指定的编码方式调用ReadStringByStreamReader方法读取流中的全部字符串, 然后使用指定编码覆盖或者追加到指定文件.
+            </summary>
+            <param name="stream"></param>
+            <param name="filename">写入的文件</param>
+            <param name="readEncoding">读取流用的编码</param>
+            <param name="writeEncoding">写入文件的编码方式</param>
+            <param name="append">是否追加. 默认是false</param>
+        </member>
+        <member name="M:ijw.Next.IO.StreamExt.WriteToBinaryFileAndDispose(System.IO.Stream,System.String,System.Boolean)">
+            <summary>
+            使用Unicode编码调用ReadBytesByBinaryReader方法读取流中的全部二进制数据, 然后使用Unicode编码覆盖或者追加到指定文件.
+            </summary>
+            <param name="stream"></param>
+            <param name="filename">写入的文件</param>
+            <param name="append">是否追加. 默认是false</param>
+        </member>
+        <member name="M:ijw.Next.IO.StreamExt.WriteToBinaryFile(System.IO.Stream,System.String,System.Int32,System.Text.Encoding,System.Text.Encoding,System.Boolean)">
+            <summary>
+            使用指定的编码方式调用ReadBytesByBinaryReader方法读取流中指定长度的二进制数据, 然后使用指定编码覆盖(或追加)到指定文件.
+            </summary>
+            <param name="stream"></param>
+            <param name="filename">写入的文件</param>
+            <param name="length">读取数据字节数</param>
+            <param name="readEncoding">读取流时使用的编码方式</param>
+            <param name="writeEncoding">写入文件时使用的编码方式</param>
+            <param name="append">是否追加. 默认是false</param>
+            <returns>读取到的二进制数组</returns>
+        </member>
+        <member name="M:ijw.Next.IO.StreamExt.WriteToBinaryFileAndDispose(System.IO.Stream,System.String,System.Text.Encoding,System.Text.Encoding,System.Boolean)">
+            <summary>
+            使用指定的编码方式调用ReadBytesByBinaryReader方法读取流中的全部二进制数据, 然后使用指定编码覆盖或者追加到指定文件.
+            </summary>
+            <param name="stream"></param>
+            <param name="filename">写入的文件</param>
+            <param name="readEncoding">读取流时使用的编码方式</param>
+            <param name="writeEncoding">写入文件时使用的编码方式</param>
+            <param name="append">是否追加. 默认是false</param>
+        </member>
+        <member name="T:ijw.Next.IO.StreamReaderHelper">
+            <summary>
+            StreamReader的帮助类
+            </summary>
+        </member>
+        <member name="M:ijw.Next.IO.StreamReaderHelper.NewStreamReaderFrom(System.String)">
+            <summary>
+            使用Unicode字符集打开指定文件。请使用using。
+            </summary>
+            <param name="filepath">文件路径</param>
+            <returns>流读取器</returns>
+        </member>
+        <member name="M:ijw.Next.IO.StreamReaderHelper.NewStreamReaderFrom(System.String,System.Text.Encoding)">
+            <summary>
+            使用指定的编码方式打开指定文件。请使用using。
+            </summary>
+            <param name="filepath">文件路径</param>
+            <param name="encoding">文本编码方式</param>
+            <returns></returns>
+        </member>
+        <member name="T:ijw.Next.IO.StreamWriterHelper">
+            <summary>
+            StreamWriter的帮助类
+            </summary>
+        </member>
+        <member name="M:ijw.Next.IO.StreamWriterHelper.NewStreamWriterByFilepath(System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            根据指定的文件路径和编码创建StreamWriter.
+            </summary>
+            <param name="filepath">文件路径</param>
+            <param name="encoding">编码</param>
+            <param name="append">是否追加模式</param>
+            <returns>创建的StreamWriter</returns>
+        </member>
+        <member name="M:ijw.Next.IO.StreamWriterHelper.NewStreamWriterByFilepath(System.String,System.Boolean)">
+            <summary>
+            根据指定的文件路径和默认的Unicode编码创建StreamWriter.
+            </summary>
+            <param name="filepath">文件路径</param>
+            <param name="append">是否追加模式</param>
+            <returns>创建的StreamWriter</returns>
+        </member>
+        <member name="T:ijw.Next.IO.StringExt">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ijw.Next.IO.StringExt.WriteToFile(System.String,System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            使用指定编码将字符串写入指定文本文件
+            </summary>
+            <param name="content"></param>
+            <param name="filepath">写入的文件</param>
+            <param name="encoding">写入使用的编码方式</param>
+            <param name="append">是否追加, true追加, false新建或覆盖</param>
+        </member>
+        <member name="M:ijw.Next.IO.StringExt.WriteToFile(System.String,System.String,System.Boolean)">
+            <summary>
+            使用Unicode编码将字符串写入指定文本文件
+            </summary>
+            <param name="content"></param>
+            <param name="filepath">写入的文件</param>
+            <param name="append">是否追加, true追加, false新建或覆盖</param>
+        </member>
+        <member name="T:ijw.Next.IO.TextReaderExt">
+            <summary>
+            文本/字符流的扩展方法
+            </summary>
+        </member>
+        <member name="M:ijw.Next.IO.TextReaderExt.ReadLines(System.IO.TextReader)">
+            <summary>
+            扩展方法, 读取流中的一行
+            </summary>
+            <param name="reader"></param>
+            <returns>行集合</returns>
+        </member>
+        <member name="M:ijw.Next.IO.TextReaderExt.ReadLinesWithLineNumber(System.IO.TextReader)">
+            <summary>
+            读取每一行的行号与内容
+            </summary>
+            <param name="reader"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
