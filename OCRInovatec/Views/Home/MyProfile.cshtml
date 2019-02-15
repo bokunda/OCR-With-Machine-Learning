@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "MyProfile";
+}
+
+<!-- REDIRECT -->
+@{ if (!Request.IsAuthenticated)
+    {
+        <script>
+            window.location.href = "/user/login";
+        </script>
+    }
+}
+
+<div class='container'>
+    <h2>MyProfile</h2>
+
+    <h3>Welcome @(Request.IsAuthenticated ? HttpContext.Current.User.Identity.Name : "Guest") - This is for Authorized user </h3>
+</div>

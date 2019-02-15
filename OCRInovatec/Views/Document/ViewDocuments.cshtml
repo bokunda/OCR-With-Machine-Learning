@@ -1,0 +1,142 @@
+﻿<html>
+
+<head>    
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />    
+</head>
+
+<body>
+
+    <br /><br />
+    <div id="jsGrid"></div>
+
+    <br /><br />
+    <div id="jsGrid2"></div>
+
+</body>
+
+@section Scripts {
+    @Scripts.Render("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+    @Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js")
+
+    <script type="text/javascript">
+        $("#jsGrid").jsGrid({
+            width: "100%",
+            height: "auto",
+
+            autoload: true,
+            paging: true,
+            pageSize: 10,
+            pageButtonCount: 5,
+            pageIndex: 1,
+            sorting: true,
+
+            controller: {
+                loadData: function (filter) {
+                    return $.ajax({
+                        url: "http://localhost:53716/api/virtualpath",
+                        dataType: "json"
+                    });
+                }
+            },
+            fields: [
+                { name: "Folder_Name", width: 50 },
+                { name: "Last_Modified_By", width: 50 },
+                { name: "Files", width: 50 },
+                {
+                    itemTemplate: function (value, item) {
+                        var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                        var $customButton = $("<button>")
+                            .text("Delete")
+                            .click(function (e) {
+
+                                var x = item["Folder_Name"].split(" ", 1).toString();
+                                
+                                // x = x.replace(' ', '_');
+                                $.ajax( {
+                                    type: "GET",
+                                    url: "http://localhost:53716/api/virtualpath/" + x + "/delete",
+                                    complete: function () {
+                                        location.reload();
+                                    }
+                                });
+
+                                e.stopPropagation();
+                            });
+
+                        return $result.add($customButton);
+                    }
+                }
+            ],
+            rowClick: function (args) {
+                // alert("pozz");
+                var virtualPath = args.item["Folder_Name"];
+
+                $("#jsGrid2").jsGrid({
+                    width: "100%",
+                    height: "auto",
+
+                    autoload: true,
+                    paging: true,
+                    pageSize: 10,
+                    pageButtonCount: 1,
+                    pageIndex: 1,
+                    sorting: true,
+
+                    controller: {
+                        loadData: function (filter) {
+                            return $.ajax({
+                                url: "http://localhost:53716/api/virtualpath?folder=" + virtualPath,
+                                dataType: "json"
+                            });
+                        }
+                    },
+                    fields: [
+                        { name: "File_Name", width: 50 },
+                        { name: "Type", width: 50 },
+                        { name: "Uploader", width: 50 },
+                        {
+                            itemTemplate: function (value, item) {
+                                var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                                var $customButton1 = $("<button>")
+                                    .text("Delete")
+                                    .click(function (e) {
+                                        window.alert("pera");
+                                        var x = item["File_Name"].split(" ", 1).toString();
+                                        // x = x.replace(' ', '_');
+                                        window.alert(x);
+                                        $.ajax( {
+                                            type: "GET",
+                                            url: "http://localhost:53716/api/virtualpath/" + x + "/delete",
+                                            complete: function () {
+                                                location.reload();
+                                            }
+                                        });
+
+                                        e.stopPropagation();
+                                    });
+                                
+                                return $result.add($customButton1);
+                            }
+                        }
+                    ],
+                    rowClick: function (args) {
+                        id = args.item["Id"];
+                        folder = args.item["Folder_Name"];
+                        window.location.href = "/Document/Image?id=" + id + "&Folder=" + folder;
+                    }
+                }); 
+            }
+        });        
+    </script>
+}
+
+<script>
+
+    
+
+</script>
+
+</html>

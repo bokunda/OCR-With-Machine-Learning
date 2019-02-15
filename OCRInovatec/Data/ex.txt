@@ -1,0 +1,28 @@
+{"Text",1
+"This is the first line of\n","Coords",1
+"This is the first line of\n","Coords",1
+"143,21,816,73"},{"Text",1
+"143,21,816,73"},{"Text",1
+"143,21,816,73"},{"Text",1
+"143,21,816,73"},{"Text",1
+"143,21,816,73"},{"Text",1
+"this text example.\n\n","Coords",1
+"this text example.\n\n","Coords",1
+"21,113,576,180"},{"Text",1
+"21,113,576,180"},{"Text",1
+"21,113,576,180"},{"Text",1
+"21,113,576,180"},{"Text",1
+"21,113,576,180"},{"Text",1
+"This is the second line\n","Coords",1
+"This is the second line\n","Coords",1
+"143,205,830,256"},{"Text",1
+"143,205,830,256"},{"Text",1
+"143,205,830,256"},{"Text",1
+"143,205,830,256"},{"Text",1
+"143,205,830,256"},{"Text",1
+"of the same text.\n","Coords",1
+"of the same text.\n","Coords",1
+"24,296,546,348"},1
+"24,296,546,348"},1
+"24,296,546,348"},1
+"24,296,546,348"},1

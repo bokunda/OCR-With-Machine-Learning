@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row" >
+    <div>
+        <img src="~/Uploads/IMG/inovatec.png" style="width:400px; display: table; margin:0 auto;" />
+    </div>
+
+    <h1 style="display: table; margin:0 auto; font:1000;">OCR SERVICE</h1>
+    <br />
+
+    @{
+        if (Request.IsAuthenticated)
+        {
+    <div style="display:inline; display: table; margin:0 auto; ">
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <p style="display:inline;"><a href="http://localhost:53716/Document/UploadDocument" class="btn btn-primary btn-lg">Go To Documents&raquo;</a></p>
+    </div>
+        }
+        else
+        {
+            <div style="display:inline; display: table; margin:0 auto; ">
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <p style="display:inline;"><a href="http://localhost:53716/User/Login" class="btn btn-primary btn-lg">LOGIN&raquo;</a></p>
+                <p style="display:inline;"><a href="http://localhost:53716/User/Register" class="btn btn-primary btn-lg">REGISTER&raquo;</a></p>
+            </div>
+        }
+    }
+
+
+</div>
+

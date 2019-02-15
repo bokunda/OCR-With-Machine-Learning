@@ -1,0 +1,668 @@
+﻿@model OCRInovatec.Models.UploadModel
+
+@{
+    ViewBag.Title = "ViewDocuments";
+}
+
+<head>
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+</head>
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: red;
+    }
+
+    /* The Modal (background) */
+    .modalUpload {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-contentUpload {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+    }
+
+    /* The Close Button */
+    .closeUpload {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .closeUpload:hover,
+        .closeUpload:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+@*<asp:Content>
+
+        <h2><%=Html.Encode(TempData["message"])%></h2>
+
+    </asp:Content>*@
+
+@{
+
+    if (TempData["ourmessage"] != null)
+    {
+        <!-- The Modal -->
+        <div id="myModalUpload" class="modalUpload">
+
+            <!-- Modal content -->
+            <div class="modal-contentUpload">
+                <span class="closeUpload">&times;</span>
+                <h4>@(Html.Raw(TempData["ourmessage"]))</h4>
+            </div>
+
+        </div>    
+        
+        <script>                        
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("closeUpload")[0];
+
+            var modal = document.getElementById('myModalUpload');
+            modal.style.display = "block";
+
+            // When the user clicks the button, open the modal
+            //modal.style.display = "block";
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }            
+
+        </script>
+    }
+}
+
+<!-- <h2>Upload Documents</h2>
+<div class="container">
+    <div class="modal-body row">
+        <div class="col-md-6">
+            @using (Html.BeginForm("UploadDocument", "Document", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+            {
+                <span>Select File:</span>
+                @Html.TextBoxFor(m => m.PostedFiles, new { type = "file", @multiple = "multiple" })
+                <br />
+                @Html.ValidationMessageFor(m => m.PostedFiles, "", new { @class = "error" })
+                <span> Add folder name: </span>
+                @Html.TextBoxFor(m => m.VirtualPath, new { type = "text"  })
+                <input type="submit" value="Upload" />
+                <span style="color:green">@Html.Raw(ViewBag.Message)</span>
+                <br />
+            }
+        </div>
+        </div>
+    </div>-->
+<!-- REDIRECT -->
+@{ if (!Request.IsAuthenticated)
+    {
+        <script>
+            window.location.href = "/user/login";
+        </script>
+    }
+}
+
+<div style="display: block; margin: 0 auto;">
+    @*<div class="container">*@
+    <h2>Documents</h2>
+    <div>
+        @*<div class="container">*@
+        <div>
+            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" onclick="clearUploadForm()">Upload Files</button>
+        </div>
+        <div class="modal-body row">
+
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+
+
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h4 class="modal-title">Upload Files</h4>
+                            <p>Choose which files You want to upload</p>
+
+                        </div>
+                        <div class="modal-body">
+
+                            <div>
+
+                                @using (Html.BeginForm("UploadDocument", "Document", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+                                {
+                                    <br />
+                                    <p>Select File:</p>
+                                    @Html.TextBoxFor(m => m.PostedFiles, new { type = "file", @multiple = "multiple" })
+                                    <br />
+                                    <p> Add folder name: </p>
+                                    @Html.TextBoxFor(m => m.VirtualPath, new { type = "text", id = "FolderName" })
+                                    <input type="submit" value="Upload" />
+                                    <span style="color:green">@Html.Raw(ViewBag.Message)</span>
+                                    <br />
+                                }
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+
+            <!-- <div class="col-md-2">
+                @using (Html.BeginForm("UploadDocument", "Document", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+                {
+                    <span>Select File:</span>
+                    @Html.TextBoxFor(m => m.PostedFiles, new { type = "file", @multiple = "multiple" })
+                    <br />
+
+                    <span> Add folder name: </span>
+                    @Html.TextBoxFor(m => m.VirtualPath, new { type = "text" })
+                    <input type="submit" value="Upload" />
+                    <span style="color:green">@Html.Raw(ViewBag.Message)</span>
+                    <br />
+                }
+            </div>-->
+            <div style="display: table; margin: 0 auto; width: 100%;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Folders</label>
+                        <div id="jsGrid"></div>
+                        @*<button class="btn btn-info" id="ExpandFolder" onclick="fetchFolders(event)">Expand</button>
+                            <button style="display: none;" class="btn btn-info" id="CollapseFolder" onclick="unfetchFolders(event)">Collapse</button>
+                            <div id="folders">
+
+                            </div>*@
+                    </div>
+
+                    <div class="col-md-6">
+                        <label id="folderForFiles"></label><label>Files</label>
+                        <button style="display:none;" class="btn btn-info btn-xs" id="AddToFolder" data-toggle="modal" data-target="#myModal">Add To Folder</button>
+                        <div id="jsGrid2"></div>
+                    </div>
+                    @*<button style="display: none;" class="btn btn-info" id="ExpandFile" onclick="fetchFile(event)">Expand</button>
+                        <button style="display: none;" class="btn btn-info" id="CollapseFile" onclick="unfetchFile(event)">Collapse</button>
+                        <button style="display: none;" class="btn btn-info" id="AddToFolder" data-toggle="modal" data-target="#myModal" onclick="addToFolder()">Add To Folder</button>
+                        <div id="documents">
+
+                        </div>*@
+                </div>
+            </div>
+        </div>
+        <div id="displayImage" style="display: table; margin: 0 auto;">
+
+        </div>
+    </div>
+    <!--Odavde ide modal-->
+    <div class="modal fade" id="myModalPreview" role="dialog">
+        <div class="modal-dialog">
+
+
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <h4 class="modal-title">Preview</h4>
+
+
+                </div>
+                <div class="modal-body">
+
+                    <div id="imgForDisplay">
+
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    var lastfolder = "";
+    function fetchFolders() {
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:53716/api/virtualpath",
+            success:
+                function (data) {
+
+                    console.log(data);
+
+                    var x = document.getElementById("ExpandFolder");
+                    x.style.display = "none";
+                    x = document.getElementById("CollapseFolder");
+                    x.style.display = "inline";
+                    var table = "<table class='table'>";
+                    table += "<tr>";
+                    table += "<th>Name</th>";
+                    table += "<th>Date created</th>";
+                    table += "<th>Created by</th>";
+                    table += "<th></th>";
+                    table += "</tr>";
+
+                    for (var i = 0; i < data.length; i++) {
+                        table += "<tr>";
+                        table += "<td> <a onclick=\"showFilesForFolder('" + data[i]["<Virtual_Path>k__BackingField"] + "')\">" + data[i]["<Virtual_Path>k__BackingField"] + "</a></td>";
+                        table += "<td>Date</td>";
+                        table += "<td>Username</td>";
+                        table += "<td><button class='btn btn-default' title='Delete folder' onclick=\"DeleteDirectory('" + data[i]["<Virtual_Path>k__BackingField"] + "')\"><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button></td>";
+                        table += "</tr>";
+                    }
+
+                    table += "</table>";
+
+                    document.getElementById("folders").innerHTML = table;
+                }
+        });
+    }
+    function DeleteDirectory(name) {
+        var x = name.split(" ", 1).toString();
+        // x = x.replace(' ', '_');
+        $.ajax( {
+            type: "GET",
+            url: "http://localhost:53716/api/virtualpath/" + x + "/delete",
+            complete: function () {
+                fetchFolders();
+
+            }
+        });
+    }
+    function DeleteFile(dname) {
+        var x = dname.split(" ", 1).toString();
+        var y = dname.split(" ").splice(-1).toString();
+        var z = x.concat(y);
+        console.log(z);
+        //console.log(dname);
+        console.log("http://localhost:53716/api/virtualpath/" + z + "/delete");
+
+        $.ajax( {
+            type: "GET",
+            url: "http://localhost:53716/api/virtualpath/" + z + "/delete",
+            complete: function () {
+                fetchFolders();
+                fetchFile();
+            }
+        });
+    }
+
+    function showFilesForFolder(name) {
+        lastfolder = name;
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:53716/api/virtualpath?folder=" + name,
+            success:
+                function (data) {
+
+                    var x = document.getElementById("ExpandFile");
+                    x.style.display = "none";
+                    x = document.getElementById("CollapseFile");
+                    x.style.display = "inline";
+                    x = document.getElementById("AddToFolder");
+                    x.style.display = "inline";
+                    var table = "<table class='table'>";
+                    table += "<tr>";
+                    table += "<th>File name</th>";
+                    // table += "<th>Virtual path</th>";
+                    table += "<th>Type</th>";
+                    table += "<th>Language</th>";
+                    table += "<th></th>";
+                    table += "</tr>";
+
+                    for (var i = 0; i < data.length; i++) {
+                        table += "<tr>";
+                        table += "<td>" + data[i]["<Name>k__BackingField"] + "</td>";
+                        // table += "<td>" + data[i]["<Virtual_Path>k__BackingField"] + "</td>";
+                        table += "<td>" + data[i]["<DocumentType>k__BackingField"] + "</td>";
+                        table += "<td>" + data[i]["<Language>k__BackingField"] + "</td>";
+
+                        table += "<td>";
+                        table += "<button title='Preview' class='btn btn-default' data-toggle='modal' data-target='#myModalPreview' id='slika'  onclick=\"previewImage('" + data[i]["<Name>k__BackingField"] + "')\"><span class='glyphicon glyphicon-picture' aria-hidden='true'></span></button>";
+                        table += "<a style='color:black;' href=\"Image?id=" + data[i]["<Id>k__BackingField"] + "&folder=" + data[i]["<Virtual_Path>k__BackingField"] + "\"><button title='OCR' class='btn btn-default'><span class='glyphicon glyphicon-text-color' aria-hidden='true'></span></button></a>";
+                        table += "<button title='Delete folder' class='btn btn-default' onclick=\"DeleteFile('" + data[i]["<Virtual_Path>k__BackingField"] + "/" + data[i]["<Id>k__BackingField"] + "')\"><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button>";
+                        table += "</td>";
+                        table += "</tr>";
+                    }
+
+                    table += "</table>";
+
+                    document.getElementById("documents").innerHTML = table;
+                }
+        });
+    }
+
+    function previewImage(fileName) {
+        if (fileName == 1) {
+            document.getElementById('imgForDisplay').innerHTML = "";
+            return;
+        }
+
+        parsedPath = "../Uploads/" + fileName;
+
+        htmlCode = ' <img style="position: relative; width: 100%;" src = "' + parsedPath + '" />';
+
+        /* htmlCode = '<div style="position: absolute; left: 50%; top: 26%">';
+         htmlCode += '<div style="position: relative; left: -50%;">';
+         htmlCode += '<p style="background-color: grey; width: 100%; margin-bottom: 0px;">';
+         htmlCode += '<button class="btn btn-info float-right" onclick="previewImage(1)">Close</button>';
+         htmlCode += '<a class="btn btn-info float-right" href="' + parsedPath + '" download>Download</a></p>';
+         htmlCode += '<img class="responsive-image" id="place-holder-1" style="zindex: 100;" src="' + parsedPath + '" />';
+         htmlCode += '<p style="text-align: center; background-color: lightgrey; " class="card-header">' + fileName + '</p>';
+         htmlCode += '</div>';
+         htmlCode += '</div>';*/
+
+        document.getElementById('imgForDisplay').innerHTML = htmlCode;
+    }
+
+    function unfetchFolders() {
+
+        var x = document.getElementById("ExpandFolder");
+        x.style.display = "inline";
+        x = document.getElementById("CollapseFolder");
+        x.style.display = "none";
+
+
+        document.getElementById("folders").innerHTML = "";
+
+    }
+
+    function addToFolder(folderName) {
+        document.getElementById('FolderName').value = folderName;
+    }
+
+    function clearUploadForm() {
+        document.getElementById('FolderName').value = "";
+    }
+
+    function fetchFile() {
+        var x = document.getElementById("ExpandFile");
+        x.style.display = "none";
+        x = document.getElementById("CollapseFile");
+        x.style.display = "inline";
+        showFilesForFolder(lastfolder);
+    }
+
+    function unfetchFile() {
+
+        var x = document.getElementById("ExpandFile");
+        x.style.display = "inline";
+        x = document.getElementById("CollapseFile");
+        x.style.display = "none";
+        x = document.getElementById("AddToFolder");
+        x.style.display = "none";
+        hideImage();
+
+
+        document.getElementById("documents").innerHTML = "";
+
+    }
+
+    function showImage(name) {
+        var forDisplay = "<img src=\"/Uploads/" + name + "\">";
+        forDisplay += "<br><span style='display:table; margin:0 auto;'>" + name + "</span><br>";
+        forDisplay += "<button class='btn btn - info' style='display:table; margin:0 auto;'>GO TO OCR</button>"
+
+        document.getElementById("displayImage").innerHTML = forDisplay;
+    }
+    function hideImage() {
+
+        document.getElementById("displayImage").innerHTML = "";
+    }
+
+    window.onload = function () {
+        //fetchFolders(event);
+        //fetchDocs(event);
+    };
+
+</script>
+
+@*<br /><br />
+    <div id="jsGrid"></div>
+
+    <br /><br />
+    <div id="jsGrid2"></div>*@
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryval")
+
+
+@section Scripts {
+    @Scripts.Render("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+    @Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js")
+
+    <script type="text/javascript">
+        var jsGridFiles = 0;
+        var jsGridFolderName = "";
+        $("#jsGrid").jsGrid({
+            width: "100%",
+            height: "auto",
+
+            autoload: true,
+            paging: true,
+            pageSize: 10,
+            pageButtonCount: 5,
+            pageIndex: 1,
+            sorting: true,
+            //filtering: true,
+
+            controller: {
+                loadData: function (filter) {
+                    return $.ajax({
+                        url: "http://localhost:53716/api/virtualpath",
+                        dataType: "json"
+                    });
+                }
+            },
+            fields: [
+                { name: "Folder_Name", type: "text", width: 150 },
+                { name: "Last_Modified", type: "text", width: 30 },
+                { name: "Files", type: "number", width: 30 },
+                {
+                    width: 22,
+                    itemTemplate: function (value, item) {
+                        jsGridFiles = parseInt(item["Files"]);
+                        var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                        var $divara = $("<div>");
+
+                        var $customButton = $("<button>")
+                            .attr("class", "btn btn-default")
+                            .append("<i class='glyphicon glyphicon-remove icon-white'></i>")
+                            .click(function (e) {
+
+                                var x = item["Folder_Name"].split(" ", 1).toString();
+                                jsGridFolderName = x;
+                                // x = x.replace(' ', '_');
+                                $.ajax( {
+                                    type: "GET",
+                                    url: "http://localhost:53716/api/virtualpath/" + x + "/delete",
+                                    complete: function () {
+                                        //location.reload();
+
+                                        $("#jsGrid").jsGrid("loadData");
+                                        document.getElementById('jsGrid2').innerHTML = "<div></div>";
+                                    }
+                                });
+
+                                e.stopPropagation();
+                            });
+
+                        $divara.append($customButton);
+
+                        return $result.add($divara);
+                    }
+                }
+            ],
+            rowClick: function (args) {
+                // alert("pozz");
+                var virtualPath = args.item["Folder_Name"];
+
+                document.getElementById("AddToFolder").style.display = "inline";
+                document.getElementById("folderForFiles").innerHTML = virtualPath + "/ ";
+
+                $("#AddToFolder").click(function () {
+                    addToFolder(virtualPath.split(" ", 1));
+                });
+
+                $("#jsGrid2").jsGrid({
+                    width: "100%",
+                    height: "auto",
+
+                    //filtering: true,
+                    autoload: true,
+                    paging: true,
+                    pageSize: 10,
+                    pageButtonCount: 5,
+                    pageIndex: 1,
+                    sorting: true,
+
+                    controller: {
+                        loadData: function (filter) {
+                            return $.ajax({
+                                url: "http://localhost:53716/api/virtualpath?folder=" + virtualPath,
+                                dataType: "json"
+                            });
+                        }
+                    },
+                    fields: [
+                        // { name: "File_Name", width: 250 },
+                        {
+                            width: 250,
+                            itemTemplate: function (value, item) {
+                                var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+                                var str = item["File_Name"];
+                                var $divara = $("<div>" + str.substring(str.indexOf("_") + 1, str.length) + "</div>");
+
+                                return $result.add($divara)
+                            }
+                        },
+                        { name: "Document_Type", width: 58 },
+                        { name: "Upload_By", width: 50 },
+                        {
+                            width: 91,
+                            itemTemplate: function (value, item) {
+                                var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                                var $divara = $("<div>");
+
+                                var $customButton = $("<button style='float:left;'>")
+                                    .attr("class", "btn btn-default")
+                                    .append("<i class='glyphicon glyphicon-remove icon-white'></i>")
+                                    .click(function (e) {
+                                        var id = item["Id"];
+                                        var folder = item["Folder_Name"];
+                                        
+                                        // x = x.replace(' ', '_');
+                                        $.ajax( {
+                                            type: "GET",
+                                            url: "http://localhost:53716/api/virtualpath/" + folder + "/" + id + "/delete",
+                                            complete: function () {
+                                                //location.reload();
+                                                $("#jsGrid").jsGrid("loadData");
+                                                $("#jsGrid2").jsGrid("loadData");
+                                                jsGridFiles--;
+                                                
+                                            }
+                                        });
+                                        
+                                        var pageIndex = $("#jsGrid2").jsGrid("option", "pageIndex");
+                                        console.log(pageIndex);
+
+
+                                        if ((jsGridFiles % 5) == 1) {
+
+                                            $("#jsGrid2").jsGrid("openPage", pageIndex - 1);
+                                        }
+                                        if ((jsGridFiles == 1)) {
+                                            $.ajax( {
+                                                type: "GET",
+                                                url: "http://localhost:53716/api/virtualpath/" + jsGridFolderName + "/delete",
+                                                complete: function () {
+                                                    $("#jsGrid").jsGrid("loadData");
+                                                    $("#jsGrid2").jsGrid("loadData");
+                                                    document.getElementById("jsGrid2").style.display = "none";
+
+                                                    location.reload();
+
+                                                   
+                                                }
+                                            });
+                                          
+                                        }
+                                        $("#jsGrid2").jsGrid("loadData");
+                                        e.stopPropagation();
+                                    });
+                                //<button onclick="window.location.href='/page2'">
+                                var $customButton2 = $("<div>")
+                                    .append("<button style='float:left;' class='btn btn-default' data-toggle=\"modal\" data-target=\"#myModalPreview\" onclick=\"previewImage('" + item["File_Name"] + "')\"><i class='glyphicon glyphicon-picture icon-white'></i></button>")
+
+                                var hrefString = "Image?id=" + item["Id"] + "&folder=" + item["Folder_Name"];
+
+                                var $customButton3 = $("<div>")
+                                    .append("<button class='btn btn-default' style='float:left;' onclick=\"window.location.href='" + hrefString + "'\";><i class='glyphicon glyphicon-text-color icon-white'></i></button>")
+
+
+                                $divara.append($customButton);
+                                $divara.append($customButton2);
+                                $divara.append($customButton3);
+
+                                return $result.add($divara);
+                            }
+                        }
+                    ]
+                    //rowClick: function (args) {
+                    //    id = args.item["Id"];
+                    //    folder = args.item["Folder_Name"];
+                    //    window.location.href = "/Document/Image?id=" + id + "&Folder=" + folder;
+                    //}
+                });
+            }
+        });
+    </script>
+}

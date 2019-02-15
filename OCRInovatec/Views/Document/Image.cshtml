@@ -1,0 +1,554 @@
+﻿
+@{
+    ViewBag.Title = "Image";
+}
+
+@section scripts
+    {
+    @Scripts.Render("~/Scripts/bootstrap.js")
+    @Scripts.Render("~/Scripts/bootstrap.min.js")
+    @Scripts.Render("~/Scripts/jquery-3.3.1.js")
+    @Scripts.Render("~/Scripts/imageMapResizer.min.js")
+}
+
+<style>
+    .lds-spinner {
+        color: red;
+    }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 60%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="forModal"></div>
+    </div>
+
+</div>
+
+<script>
+
+    var selectedType;
+
+    var getID;
+    var docID;
+
+    var dataOCR;
+
+    var owner;
+    var amIOwner;
+
+    (function () {
+        getID = window.location.search.substr(1).split("&");
+        getID = getID[0].split("=");
+        getID = getID[1];
+
+        docID = window.location.search.substr(1).split("&");
+        docID = docID[1].split("=");
+        docID = docID[1];
+
+        this.getID = getID;
+        this.docID = docID;
+
+        var str = "http://localhost:53716/api/virtualpath/" + docID + "?Id=" + getID;
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+
+                owner = JSON.parse(this.responseText)["<Owner>k__BackingField"];
+                dataBind(JSON.parse(this.responseText));
+
+                id = this.getID;
+
+                document.getElementById("ocrTextarea").innerHTML = '<div style="display:table; margin: 0 auto;"><div class="lds-circle"></div></div>';
+
+                $.ajax( {
+                    type: "GET",
+                    url: "http://localhost:53716/api/virtualpath/" + getID + "/ocr",
+                    success: function (data) {
+
+                        dataOCR = JSON.parse(data);
+                        var str = "";
+                        var tempStr = "";
+                        var docMap = "<map name='docmap'>";
+
+                        for (var i = 0; i < dataOCR.length; i++) {
+                            str += dataOCR[i].Text;
+                            tempStr = dataOCR[i].Text;
+                            docMap += "<area shape='rect' coords='" + dataOCR[i].Coords + "' href=\"#\" onmouseover='textToJSON(); mapFunction(" + i + ");' onmouseout='mapFunction(-1)' >";
+                        }
+                        var textDoc = document.getElementById("ocrTextarea").innerHTML = "<p>" + str + "</p>";
+                        $("#ocrTextarea").height($('#image').height());
+
+                        docMap += "</map>";
+                        mapFunction(-1);
+                        document.getElementById('image').innerHTML += docMap;
+                        $('map').imageMapResize();
+
+                        textToJSON();
+
+                        $.ajax({
+                            type: "GET",
+                            url: "http://localhost:53716/api/virtualpath/" + getID + "/isLocked",
+                            success: function (data) {
+                                amIOwner = JSON.parse(data);
+
+                                if (amIOwner == true) {
+                                    document.getElementById("ocrTextarea").contentEditable = "true";
+                                    document.getElementById("ocrTextarea").style.backgroundColor = "white";
+                                    document.getElementById("Edit").style.display = "none";
+                                    document.getElementById("UpdateChanges").style.display = "inline";
+                                }
+                                else if (amIOwner == false) {
+                                    document.getElementById("ocrTextarea").contentEditable = "false";
+                                    document.getElementById("ocrTextarea").style.backgroundColor = "lightgray";
+                                    document.getElementById("Edit").style.display = "none";
+                                    document.getElementById("Delete").style.display = "none";
+                                    document.getElementById("AgainOCR").style.display = "none";
+                                    document.getElementById("UpdateChanges").style.display = "none";
+                                    window.alert("Someone else is editing doc! Try again later!");
+                                }
+
+                            }
+                        })
+
+                        // ajax for classify
+                        document.getElementById('forDocType').innerHTML = '<div style="display:inline; float: left;"><h3 style="display:inline; float: left;">Document type is: </h3></div><div class="lds-circle" style="float: left;"></div>';
+
+                        $.ajax({
+                            type: "GET",
+                            url: "http://localhost:53716/api/virtualpath/" + getID + "/classify",
+                            success: function (data) {
+
+                                if (parseInt(data) < 0 && (amIOwner == true || amIOwner == -1)) {
+                                    selectedType = parseInt(data) * (-1);
+
+                                    var str = "";
+                                    if (selectedType == 1) {
+                                        str = "ID";
+                                    } else if (selectedType == 2) {
+                                        str = "Document";
+                                    } else if (selectedType == 3) {
+                                        str = "Form";
+                                    }
+
+                                    var div = "<div>";
+
+                                    div += "<h3>I think document type is: ";
+                                    div += "<select id='selectedType' style='display: inline;'>";
+                                    div += "<option value='1'>ID</option>";
+                                    div += "<option value='2'>Document</option>";
+                                    div += "<option value='3'>Form</option>";                                    
+                                    div += "</select>";
+
+                                    div += "<button style='float:right; margin-left: 4px;' class='btn btn-success' onclick='displayModal()'>Submit</button>";
+
+                                    div += "</h3></div>";                                    
+
+                                    document.getElementById('forDocType').innerHTML = div;
+                                    document.getElementById("selectedType").value = selectedType;
+
+                                    // Get the modal
+                                    var modal = document.getElementById('myModal');
+
+                                    document.getElementById("forModal").innerHTML = "<div><h2 style='color:red;'>This action can be performed only once!</h2><button class='btn btn-info btn-lg' onclick='setSelectedType()'>Submit</button></div>";
+
+                                    // Get the button that opens the modal
+                                    var btn = document.getElementById("myBtn");
+
+                                    // Get the <span> element that closes the modal
+                                    var span = document.getElementsByClassName("close")[0];
+
+                                    
+
+                                    // When the user clicks the button, open the modal
+                                    //modal.style.display = "block";
+                                    
+                                    // When the user clicks on <span> (x), close the modal
+                                    span.onclick = function () {
+                                        modal.style.display = "none";
+                                    }
+
+                                    // When the user clicks anywhere outside of the modal, close it
+                                    window.onclick = function (event) {
+                                        if (event.target == modal) {
+                                            modal.style.display = "none";
+                                        }
+                                    }
+                                }
+                                else {
+                                    selectedType = parseInt(data);
+                                    var str = "";
+                                    if (selectedType == 1) {
+                                        str = "ID";
+                                    } else if (selectedType == 2) {
+                                        str = "Document";
+                                    } else if (selectedType == 3) {
+                                        str = "Form";
+                                    } else {
+                                        str = "Unknown";
+                                    }
+
+                                    document.getElementById('forDocType').innerHTML = "<h2>Document type is: " + str + "</h2>";
+                                }
+                            }
+                        })
+                    }
+                });
+            }
+        };
+        xhttp.open("GET", str, true);
+        xhttp.send();
+
+
+    })();
+
+    function displayModal() {
+        document.getElementById('myModal').style.display = "block";
+    }
+
+    function setSelectedType() {
+
+
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:53716/api/virtualpath/" + this.getID + "/type",
+            contentType: 'application/json',
+            data: JSON.stringify({ "type": parseInt(document.getElementById('selectedType').value) }),
+            success: function () {
+                location.reload();
+            },
+            error: function () {
+
+            }
+        })
+    }
+
+    function dataBind(response) {
+
+        // set title
+        titleName = response["<Name>k__BackingField"];
+        goBack = "<a href='/Document/UploadDocument' title='Back'><span class='glyphicon glyphicon-arrow-left' aria-hidden='true'></span></a>&nbsp;&nbsp;";
+        titleTag = "<h2>" + goBack + "File: " + titleName.substring(titleName.indexOf("_") + 1, titleName.length) + "</h2>";
+        document.getElementById('title').innerHTML += titleTag;
+
+        // set image
+        imgPath = response["<Path>k__BackingField"].split("\\");
+        imgString = "<h3 style='text-align: center;'>Image</h3>";
+        imgString += "<img usemap='#docmap' style='width:100%;'  src='../" + imgPath[imgPath.length - 2] + "/" + imgPath[imgPath.length - 1] + "'>";
+
+        document.getElementById('image').innerHTML = imgString;
+
+        // set textarea
+        txtAreaOCR = "<h3 style='text-align: center;'>OCR Text</h3>";
+        // txtAreaOCR += "<textarea id='ocrTextarea' class='form-control' ></textarea>";
+        //txtAreaOCR += "<div id='ocrTextarea' style='overflow-y:scroll;' contenteditable='true'></div>";
+        txtAreaOCR += "<div id='ocrTextarea' onkeypress='keypressCheck(event)' style='overflow-y:scroll; background-color:lightgray; padding: 2%;' ></div>";
+
+        document.getElementById('text').innerHTML = txtAreaOCR;
+
+        // set buttons
+        buttons = "<button id='AgainOCR' onclick='AgainOCR()' class='btn btn-primary' style='margin-left: 3px; margin-right: 3px;'>Again OCR</button>";
+        if (owner == null && amIOwner == true) {
+            buttons += "<button id = 'Edit' onclick='lockDoc()' class='btn btn-warning' style='margin-left: 3px; margin-right: 3px;'>Edit</button>";
+            buttons += "<button id = 'UpdateChanges' onclick='updateChanges()' class='btn btn-success' style='margin-left: 3px; margin-right: 3px; display: none;'>Update changes</button>";
+
+            console.log('1unlocked');
+            document.getElementById("ocrTextarea").contentEditable = "false";
+            document.getElementById("ocrTextarea").style.backgroundColor = "lightgray";
+        }
+
+        buttons += "<button id = 'Edit' onclick='lockDoc()' class='btn btn-warning' style='margin-left: 3px; margin-right: 3px;'>Edit</button>";
+        buttons += "<button id = 'UpdateChanges' onclick='updateChanges()' class='btn btn-success' style='margin-left: 3px; margin-right: 3px; display: none;'>Update changes</button>";
+
+        buttons += "<button id='Delete' onclick='Delete()' class='btn btn-danger' style='margin-left: 3px; margin-right: 3px;'>Delete</button>";
+        document.getElementById('buttons').innerHTML = buttons;
+
+    }
+
+    function mapFunction(index) {
+
+        var str = "";
+
+        for (var i = 0; i < dataOCR.length; i++) {
+
+            if (i == index) {
+                str += "<span style='background-color: #FFFF00'>" + dataOCR[i].Text + "</span><br>";
+            }
+            else {
+                str += dataOCR[i].Text + "<br>";
+            }
+        }
+
+        document.getElementById("ocrTextarea").innerHTML = str;
+
+    }
+
+    function getText() {
+        console.log('get text');
+        id = this.getID;
+
+        $.ajax( {
+            type: "GET",
+            url: "http://localhost:53716/api/virtualpath/" + id + "/ocr",
+            success: function () {
+                console.log('uzeo tekst');
+            }
+        });
+    }
+
+    function lockDoc() {
+
+        id = this.getID;
+
+        $.ajax( {
+            type: "GET",
+            url: "http://localhost:53716/api/virtualpath/" + id + "/lock",
+            success: function () {
+                console.log('locked');
+                document.getElementById("ocrTextarea").contentEditable = "true";
+                document.getElementById("ocrTextarea").style.backgroundColor = "white";
+                document.getElementById("Edit").style.display = "none";
+                document.getElementById("UpdateChanges").style.display = "inline";
+
+                document.getElementById("docType").style.backgroundColor = "white";
+                document.getElementById("docType").disabled = false;
+            }
+        });
+    }
+
+    function unlockDoc() {
+        id = this.getID;
+
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:53716/api/virtualpath/" + id + "/unlock",
+            success: function () {
+                console.log('unlocked');
+                document.getElementById("ocrTextarea").contentEditable = "false";
+                document.getElementById("docType").style.backgroundColor = "lightgray";
+                document.getElementById("docType").disabled = true;
+            }
+        })
+    }
+
+    //function getText() {
+
+    //    id = this.getID;
+    //    var textDoc = document.getElementById("ocrTextarea").value;
+
+    //    $.ajax({
+    //        type: "GET",
+    //        url: "",
+    //        success: function (data) {
+    //            textDoc.value = data;
+    //        }
+    //    })
+
+    //}
+
+    function textToJSON() {
+
+        console.log("presao");
+        var textDoc = document.getElementById("ocrTextarea").innerHTML;
+        var splittedText = textDoc.split("<br>");
+
+        for (var i = 0; i < dataOCR.length; i++) {
+            dataOCR[i].Text = splittedText[i];
+        }
+    }
+
+    function updateChanges() {
+
+        textToJSON();
+
+        var idDoc = this.getID;
+
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:53716/api/virtualpath/" + idDoc + "/update",
+            contentType: 'application/json',
+            data: JSON.stringify({ id: idDoc, text: dataOCR }),
+            success: function () {
+                //console.log(JSON.stringify({ id: idDoc, text: dataOCR }));
+            },
+            error: function () {
+                console.log('greska');
+            }
+        })
+        document.getElementById("ocrTextarea").contentEditable = "false";
+        document.getElementById("ocrTextarea").style.backgroundColor = "lightgray";
+        document.getElementById("Edit").style.display = "inline";
+        document.getElementById("UpdateChanges").style.display = "none";
+
+        document.getElementById("docType").style.backgroundColor = "lightgray";
+        document.getElementById("docType").disabled = true;
+        //this.unlockDoc();
+
+    }
+
+    function chooseDocType(type) {
+        var idDoc = this.getID;
+
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:53716/api/virtualpath/" + idDoc + "/type",
+            contentType: 'application/json',
+            data: JSON.stringify({ "type": parseInt(type) }),
+            success: function () {
+                
+            },
+            error: function () {
+                alert("GRESKA: Doc type!");
+            }
+        })
+    }
+
+    function keypressCheck(e) {
+        var e = window.event || e; // Handle browser compatibility
+        var keyID = e.keyCode;
+        //space pressed
+        if (keyID == 13) {
+            e.preventDefault(); // Prevent the default action
+            window.alert("Cannot use ENTER key for editing text!");
+        }
+    }
+
+    function AgainOCR() {
+
+        document.getElementById("ocrTextarea").innerHTML = '';
+        document.getElementById("ocrTextarea").innerHTML = '<div style="display:table; margin: 0 auto;"><div class="lds-circle"></div></div>';
+
+        $.ajax( {
+            type: "GET",
+            url: "http://localhost:53716/api/virtualpath/" + getID + "/againocr",
+            success: function (data) {
+
+                dataOCR = JSON.parse(data);
+                var str = "";
+                var tempStr = "";
+                var docMap = "<map name='docmap'>";
+
+                for (var i = 0; i < dataOCR.length; i++) {
+                    str += dataOCR[i].Text;
+                    tempStr = dataOCR[i].Text;
+                    docMap += "<area shape='rect' coords='" + dataOCR[i].Coords + "' href=\"#\" onmouseover='textToJSON(); mapFunction(" + i + ");' onmouseout='mapFunction(-1)' >";
+                }
+                var textDoc = document.getElementById("ocrTextarea").innerHTML += "<p>" + str + "</p>";
+                $("#ocrTextarea").height($('#image').height());
+
+                docMap += "</map>";
+                mapFunction(-1);
+                document.getElementById('image').innerHTML += docMap;
+                $('map').imageMapResize();
+
+                textToJSON();
+            }
+        });
+    }
+
+    function Delete() {
+        var x = docID.toString();
+        var y = getID.toString();
+        var t = "/"
+        var z = x.concat(t.concat(y));
+        var str = "http://localhost:53716/api/virtualpath/" + z + "/delete";
+        console.log(str);
+        $.ajax( {
+            type: "GET",
+            url: str,
+            complete: function () {
+                window.location.replace('http://localhost:53716/Document/UploadDocument');
+            }
+        });
+    }
+
+</script>
+
+<!-- REDIRECT -->
+@{ if (!Request.IsAuthenticated)
+    {
+        <script>
+            window.location.href = "/user/login";
+        </script>
+    }
+}
+
+<div id="title">
+
+</div>
+
+<div id="forDocType" style="display: table; margin: 0 auto;">
+    @*<p style="display: inline;">Document type is: </p>
+        <select id="docType" disabled style="background-color: lightgray; display: inline;">
+            <option value="1">ID</option>
+            <option value="3">Form</option>
+            <option value="2">Document</option>
+        </select>*@
+</div>
+
+<div class="">
+
+    <div class="row">
+        <div id="buttons" style="display: table; margin: 0 auto; margin-top: 18px;">
+            <!-- BUTTONS HERE -->
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div id="image">
+                <!-- IMAGE HERE-->
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div id="text" class="form-group">
+                <!-- OCR TEXT HERE -->
+            </div>
+        </div>
+    </div>
+
+</div>

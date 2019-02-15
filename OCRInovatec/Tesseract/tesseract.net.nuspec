@@ -1,0 +1,32 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata minClientVersion="2.5">
+    <id>tesseract.net</id>
+    <title>tesseract.net</title>
+    <version>$version$</version>
+    <authors>tvn-cosine</authors>
+    <owners>tvn-cosine</owners>
+    <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/tvn-cosine/tesseract.net/wiki</projectUrl> 
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>a .net wrapper for Tesseract Ocr.</description>
+    <summary>a .net wrapper for Tesseract Ocr.</summary>
+    <releaseNotes>
+      Made Tesseract.Native.DllImports public -- NOT BEST OPTION BUT HEY
+      Added public static property TesseractDirectory in Tesseract.Native.DllImports so users can specify where dlls are located manually
+    </releaseNotes>
+    <copyright>Copyright © tvn-cosine 2018</copyright>
+    <tags>dotNet OCR tesseract</tags>
+    <dependencies> 
+		<dependency id="leptonica.net" version="1.75.0.4" /> 
+	</dependencies>
+  </metadata>
+  <files>
+    <file src="lib\x86\pvt.cppan.demo.google.tesseract.libtesseract400.dll" target="build\x86\" />
+    <file src="lib\x64\pvt.cppan.demo.google.tesseract.libtesseract400.dll" target="build\x64\" />
+    <file src="bin\net452\tesseract.net.dll" target="lib/net452/" />
+    <file src="bin\net462\tesseract.net.dll" target="lib/net462/" />
+    <file src="bin\net471\tesseract.net.dll" target="lib/net471/" />
+    <file src="tesseract.net.targets" target="build/" />
+  </files>
+</package>

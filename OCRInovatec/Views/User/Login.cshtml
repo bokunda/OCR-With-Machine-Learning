@@ -1,0 +1,65 @@
+﻿
+@model OCRInovatec.Models.Login
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<div class="container">
+    <div style="display: table; margin:0 auto;">
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        
+
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary(true)
+            @Html.AntiForgeryToken()
+            <fieldset>
+                <legend>Login</legend>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.Username)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.Username)
+
+
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.Password)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.Password)
+
+
+                </div>
+                <div>
+                    @Html.ValidationMessage("Log")
+                </div>
+                <br />
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.RememberMe)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.RememberMe)
+
+                </div>
+
+                <p>
+                    <input type="submit" value="Login" class="btn btn-info"/>
+                </p>
+            </fieldset>
+        }
+
+        
+    </div>
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
