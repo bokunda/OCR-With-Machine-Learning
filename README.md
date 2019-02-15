@@ -23,7 +23,7 @@ Used technologies: ASP.NET, MS SQL, Tesseract OCR lib, libsvm, AJAX...
 [![Screen Shot](https://i.imgur.com/EAACMlR.png)](#)<br>
 Login screen<br><br>
 
-[![Screen Shot](https://i.imgur.com/XUcTpk7.png)](#)<br>
+[![Screen Shot](https://i.imgur.com/v8Ir29k.png)](#)<br>
 Main page<br><br>
 
 [![Screen Shot](https://i.imgur.com/QuByqkK.png)](#)<br>
